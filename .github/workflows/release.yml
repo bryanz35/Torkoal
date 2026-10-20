@@ -1,0 +1,39 @@
+# Release: the full gate set plus packaging, for version tags only. Until
+# 'make test' and 'make package' are implemented (milestones 2-5) this
+# workflow fails by design.
+#
+# Runs inside the CI container (tools/Dockerfile.ci); every tool comes from
+# tools/toolchain.lock.json via tools/bootstrap.sh. Third-party actions are
+# pinned by commit.
+name: release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    runs-on: ubuntu-24.04
+    env:
+      CI_RUN: docker run --rm --volume ${{ github.workspace }}:/work robot-ci bash -euo pipefail -c
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          submodules: recursive
+          persist-credentials: false
+      - name: Build CI container
+        run: docker build --file tools/Dockerfile.ci --tag robot-ci tools
+      - name: Bootstrap and verify tools
+        run: $CI_RUN './tools/bootstrap.sh && make doctor'
+      - name: All hardware-free gates
+        run: $CI_RUN 'make test'
+      - name: Package
+        run: $CI_RUN 'make package'
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: release-${{ github.ref_name }}
+          path: dist/
+          if-no-files-found: error

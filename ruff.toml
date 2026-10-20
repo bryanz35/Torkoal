@@ -1,0 +1,10 @@
+# Python style for host/ and tools/ (docs/DESIGN.md §4.1).
+target-version = "py312"
+line-length = 100
+extend-exclude = ["firmware/external", "web/node_modules"]
+
+[lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF"]
+
+[lint.isort]
+known-first-party = ["robot_host"]

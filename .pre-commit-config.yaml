@@ -1,0 +1,29 @@
+# Local hooks only: they run the pinned tools from .venv and web/node_modules,
+# so pre-commit downloads nothing. Enable with `.venv/bin/pre-commit install`.
+repos:
+  - repo: local
+    hooks:
+      - id: lint-python
+        name: ruff format/check and mypy
+        entry: make lint-python
+        language: system
+        pass_filenames: false
+        types: [python]
+      - id: lint-c
+        name: clang-format
+        entry: make lint-c
+        language: system
+        pass_filenames: false
+        types_or: [c]
+      - id: lint-web
+        name: prettier
+        entry: make lint-web
+        language: system
+        pass_filenames: false
+        files: ^web/
+      - id: lint-boundaries
+        name: dependency boundaries
+        entry: make lint-boundaries
+        language: system
+        pass_filenames: false
+        files: ^(firmware|host)/

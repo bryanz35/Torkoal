@@ -1,0 +1,20 @@
+# Bootstrap outputs (tools/bootstrap.sh)
+/.tools/
+/.venv/
+
+# Build outputs (docs/DESIGN.md §10.1)
+/build/
+/dist/
+/web/dist/
+/web/node_modules/
+/host/src/robot_host/static/
+
+# Python
+__pycache__/
+*.egg-info/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+
+# Local tooling index
+/graft/

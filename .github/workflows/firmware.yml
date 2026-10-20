@@ -1,0 +1,39 @@
+# Firmware: C style, boundaries, native tests, and cross-builds for every
+# supported board/profile.
+#
+# Runs inside the CI container (tools/Dockerfile.ci); every tool comes from
+# tools/toolchain.lock.json via tools/bootstrap.sh. Third-party actions are
+# pinned by commit.
+name: firmware
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  firmware:
+    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        board: [pico]
+        profile: [uncommissioned]
+    env:
+      CI_RUN: docker run --rm --volume ${{ github.workspace }}:/work robot-ci bash -euo pipefail -c
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          submodules: recursive
+          persist-credentials: false
+      - name: Build CI container
+        run: docker build --file tools/Dockerfile.ci --tag robot-ci tools
+      - name: Bootstrap and verify tools
+        run: $CI_RUN './tools/bootstrap.sh python firmware && python3 tools/doctor.py --component python --component firmware'
+      - name: C style and boundaries
+        run: $CI_RUN 'make lint-c lint-boundaries'
+      - name: Native tests
+        run: $CI_RUN 'make firmware-test'
+      - name: Cross-build
+        run: $CI_RUN 'make firmware BOARD=${{ matrix.board }} PROFILE=${{ matrix.profile }}'

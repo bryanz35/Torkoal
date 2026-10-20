@@ -1,0 +1,9 @@
+[submodule "firmware/external/pico-sdk"]
+	path = firmware/external/pico-sdk
+	url = https://github.com/raspberrypi/pico-sdk.git
+[submodule "firmware/external/picotool"]
+	path = firmware/external/picotool
+	url = https://github.com/raspberrypi/picotool.git
+[submodule "firmware/external/unity"]
+	path = firmware/external/unity
+	url = https://github.com/ThrowTheSwitch/Unity.git

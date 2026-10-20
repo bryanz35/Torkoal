@@ -1,0 +1,166 @@
+{
+  "schema_version": 1,
+  "description": "Exact toolchain pins for docs/DESIGN.md §2 and §10.1. tools/bootstrap.sh installs only what is listed here; tools/doctor.py verifies it. Change entries deliberately and record the rationale (docs/adr/0001-toolchain-provisioning.md).",
+  "platforms": ["linux-x86_64", "linux-aarch64"],
+  "tools": {
+    "arm-gnu-toolchain": {
+      "version": "13.2.Rel1",
+      "component": "firmware",
+      "bin_dir": "bin",
+      "checks": [
+        {
+          "command": ["arm-none-eabi-gcc", "--version"],
+          "expect": "Arm GNU Toolchain 13.2.rel1"
+        }
+      ],
+      "archives": {
+        "linux-x86_64": {
+          "url": "https://developer.arm.com/-/media/Files/downloads/gnu/13.2.rel1/binrel/arm-gnu-toolchain-13.2.rel1-x86_64-arm-none-eabi.tar.xz",
+          "sha256": "6cd1bbc1d9ae57312bcd169ae283153a9572bd6a8e4eeae2fedfbc33b115fdbb"
+        },
+        "linux-aarch64": {
+          "url": "https://developer.arm.com/-/media/Files/downloads/gnu/13.2.rel1/binrel/arm-gnu-toolchain-13.2.rel1-aarch64-arm-none-eabi.tar.xz",
+          "sha256": "8fd8b4a0a8d44ab2e195ccfbeef42223dfb3ede29d80f14dcf2183c34b8d199a"
+        }
+      }
+    },
+    "cmake": {
+      "version": "3.31.12",
+      "component": "firmware",
+      "bin_dir": "bin",
+      "checks": [
+        {
+          "command": ["cmake", "--version"],
+          "expect": "cmake version 3.31.12"
+        }
+      ],
+      "archives": {
+        "linux-x86_64": {
+          "url": "https://github.com/Kitware/CMake/releases/download/v3.31.12/cmake-3.31.12-linux-x86_64.tar.gz",
+          "sha256": "0dc2e9a6860f06bf10bd8fadc03e35d9eeb4df46e33763a7e480e987758f385c"
+        },
+        "linux-aarch64": {
+          "url": "https://github.com/Kitware/CMake/releases/download/v3.31.12/cmake-3.31.12-linux-aarch64.tar.gz",
+          "sha256": "83f8fd91d2038a56556e1400390fcfe42f79602940c494f6c6f1cdae7f9e7f40"
+        }
+      }
+    },
+    "ninja": {
+      "version": "1.13.2",
+      "component": "firmware",
+      "bin_dir": ".",
+      "checks": [
+        {
+          "command": ["ninja", "--version"],
+          "expect": "1.13.2"
+        }
+      ],
+      "archives": {
+        "linux-x86_64": {
+          "url": "https://github.com/ninja-build/ninja/releases/download/v1.13.2/ninja-linux.zip",
+          "sha256": "5749cbc4e668273514150a80e387a957f933c6ed3f5f11e03fb30955e2bbead6"
+        },
+        "linux-aarch64": {
+          "url": "https://github.com/ninja-build/ninja/releases/download/v1.13.2/ninja-linux-aarch64.zip",
+          "sha256": "fd2cacc8050a7f12a16a2e48f9e06fca5c14fc4c2bee2babb67b58be17a607fc"
+        }
+      }
+    },
+    "nodejs": {
+      "version": "22.23.3",
+      "component": "web",
+      "bin_dir": "bin",
+      "checks": [
+        {
+          "command": ["node", "--version"],
+          "expect": "v22.23.3"
+        },
+        {
+          "command": ["npm", "--version"],
+          "expect": "10.9.9"
+        }
+      ],
+      "archives": {
+        "linux-x86_64": {
+          "url": "https://nodejs.org/dist/v22.23.3/node-v22.23.3-linux-x64.tar.xz",
+          "sha256": "df450af89261115ef9f9e3830c3eeb2cc9213b63c720b1af623cb5dcbe2e02de"
+        },
+        "linux-aarch64": {
+          "url": "https://nodejs.org/dist/v22.23.3/node-v22.23.3-linux-arm64.tar.xz",
+          "sha256": "a44aeb94849a299b22df10b9e622ec2f605c2183501bc40590705131de7c740f"
+        }
+      }
+    },
+    "cpython": {
+      "version": "3.12.15",
+      "build": "python-build-standalone 20261003",
+      "component": "python",
+      "bin_dir": null,
+      "checks": [
+        {
+          "command": [".venv/bin/python", "--version"],
+          "expect": "Python 3.12.15"
+        }
+      ],
+      "archives": {
+        "linux-x86_64": {
+          "url": "https://github.com/astral-sh/python-build-standalone/releases/download/20261003/cpython-3.12.15%2B20261003-x86_64-unknown-linux-gnu-install_only.tar.gz",
+          "sha256": "f937814031eab4698ca6d07ec606ede1825768f3f3e99af76d9db3900bee03c5"
+        },
+        "linux-aarch64": {
+          "url": "https://github.com/astral-sh/python-build-standalone/releases/download/20261003/cpython-3.12.15%2B20261003-aarch64-unknown-linux-gnu-install_only.tar.gz",
+          "sha256": "95c01982c9fcb9d95b0acfdb5eb8a6e0099dd11edf062314a474228d93f2b765"
+        }
+      }
+    }
+  },
+  "built_tools": {
+    "picotool": {
+      "component": "firmware",
+      "source": "firmware/external/picotool",
+      "install_dir": ".tools/picotool",
+      "checks": [
+        {
+          "command": [".tools/picotool/picotool/picotool", "version"],
+          "expect": "picotool v2.2.0"
+        }
+      ]
+    }
+  },
+  "submodules": {
+    "firmware/external/pico-sdk": {
+      "version": "2.2.0",
+      "commit": "a1438dff1d38bd9c65dbd693f0e5db4b9ae91779",
+      "recursive": true
+    },
+    "firmware/external/picotool": {
+      "version": "2.2.0",
+      "commit": "a7eb3988f0645239185fadb4e25d8279478c2dbb",
+      "recursive": false
+    },
+    "firmware/external/unity": {
+      "version": "v2.6.1",
+      "commit": "cbcd08fa7de711053a3deec6339ee89cad5d2697",
+      "recursive": false
+    }
+  },
+  "python": {
+    "locks": {
+      "runtime": "host/requirements.lock",
+      "dev": "host/requirements-dev.lock"
+    },
+    "lock_tool": {
+      "name": "uv",
+      "version": "0.12.10"
+    },
+    "exclude_newer": "2026-10-06T00:00:00Z"
+  },
+  "web": {
+    "lockfile": "web/package-lock.json"
+  },
+  "ci_container": {
+    "dockerfile": "tools/Dockerfile.ci",
+    "base_image": "docker.io/library/ubuntu:24.04@sha256:68ee22004a9109b44973313b02ff7b1de250f1de0f5ecb628d73f579aaff33ac",
+    "apt_snapshot": "20261015T000000Z"
+  }
+}
